@@ -1,0 +1,6 @@
+Lista de atributos de elementos html
+https://www.w3schools.com/html/html_attributes.asp
+
+lista de propiedades de objetos javascript
+https://www.w3schools.com/js/js_object_properties.asp
+

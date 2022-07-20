@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Tasks</title>
+    <script src="tasks.js" defer></script>
+</head>
+
+<body>
+    <h1>Tasks</h1>
+    <form onsubmit="enviar()">
+        <input id="task" placeholder="New Task" type="text">
+        <input id="submit" type="submit">
+    </form>
+    <ul id="tasks">
+        <li>
+            Elemento 1
+        </li>
+    </ul>
+</body>
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+
+        function enviar() {
+            alert('Hola');
+            let newtask = document.getElementById('task');
+        }
+
+        console.log('Hola');
+        let newh1 = document.createElement('h1');
+        newh1.innerHTML('Probando');
+        let body = document.querySelector('body')
+        body.appendChild(newh1);
+    })
+</script>
+
+</html>

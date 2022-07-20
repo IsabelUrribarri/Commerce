@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Funciones</title>
+</head>
+
+<body>
+
+</body>
+<script>
+    var sum = function () { return 5 + 10; };
+    var subtract = function (x = 5, y = 10) { return x - y; };
+    var multiply = function (x = 5, y) { return x * y; };
+    var divide = function (x, y = 10) { return x / y; };
+    var modulo = function (x, y=2) {return x % y};
+        
+
+    //functions can be stored in an array
+    var operations = [sum, subtract, multiply, divide, modulo];
+
+    //functions can be called from an array by accessing them and using the () operator
+    for (var i = 0; i < operations.length; i++) {
+        console.log(operations[i](8, undefined));
+    }
+
+    function test(num = 1) {
+        console.log(typeof num)
+    }
+
+    test()           // 'number' (num se establece en 1)
+    test(undefined)  // 'number' (num se establece en 1 también)
+
+    // prueba con otros valores falsos:
+    test('')         // 'string' (num se establece en '')
+    test(null)       // 'object' (num se establece en null)
+
+</script>
+
+</html>

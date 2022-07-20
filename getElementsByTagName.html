@@ -1,0 +1,29 @@
+<html>
+
+<head>
+    <title>Getting elements by tag name.</title>
+</head>
+
+<body>
+    <h1>Heading 1</h1>
+    <p>Paragraph 1</p>
+    <h1>Heading 2</h1>
+    <p>Paragraph 2</p>
+    <h1>Heading 3</h1>
+    <p>Paragraph 3</p>
+</body>
+<script>
+    var headings = document.getElementsByTagName('h1');
+    var paragraphs = document.getElementsByTagName('p');
+
+    for (var i = 0; i < headings.length; i++) {
+        headings[i].style.color = "green";
+    }
+
+    for (var i = 0; i < paragraphs.length; i++) {
+        paragraphs[i].style.color = "blue";
+    }
+
+</script>
+
+</html>

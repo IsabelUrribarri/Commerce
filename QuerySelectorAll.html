@@ -1,0 +1,23 @@
+<html>
+
+<head>
+    <title>Accessing Multiple Element Nodes</title>
+</head>
+
+<body>
+    <h1>To-Do Items</h1>
+    <ul id="todos">
+        <li>Get groceries</li>
+        <li>Go for a run</li>
+        <li>Learn web development</li>
+    </ul>
+</body>
+<script>
+    var todoItems = document.querySelectorAll('#todos > li');
+    for (var i = 0; i < todoItems.length; i++) {
+        todoItems[i].innerHTML = "Todo Item #" + (i + 1);
+    }
+    console.log(todoItems);
+</script>
+
+</html>

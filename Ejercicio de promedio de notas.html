@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Ejercicio</title>
+</head>
+
+<body>
+
+</body>
+<script>
+    var students = [
+        {
+            name: "Mary",
+            age: 10,
+            grades: [90, 88, 95]
+        },
+        {
+            name: "Joseph",
+            age: 11,
+            grades: [80, 100, 90, 96]
+        }
+    ];
+    averages = [];
+    for (var i = 0; i < students.length; i++) {
+        for (property in students[i]) {
+            if (property == "grades") {
+                notas = students[i][property];
+                var sum = 0;
+                for (var j = 0; j < notas.length; j++) {
+                    sum = sum + notas[j];
+                }
+                averages[i] = sum / notas.length;
+
+            }
+        }
+    }
+    console.log(averages);
+</script>
+
+</html>

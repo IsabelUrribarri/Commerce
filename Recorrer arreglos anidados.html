@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Arrays</title>
+</head>
+
+<body>
+
+</body>
+<script>
+    var students = [
+        ["Mary", 'F', 10],
+        ["Barbara", 'F', 11],
+        ["David", 'M', 12],
+        ["Alex",'M', 11]
+    ];
+    var printStudents = function (students) {
+        for (var i = 0; i < students.length; i++) {
+            for (var j = 0; j < students[i].length; j++) {
+                console.log(students[i][j]);
+            }
+            console.log("Student " + i + ":");
+            console.log(students[i][0]);
+            console.log(students[i][1]);
+        }
+    }
+    printStudents(students);
+</script>
+
+</html>

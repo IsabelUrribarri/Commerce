@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Ejercicio</title>
+</head>
+
+<body>
+
+</body>
+<script>
+    var students = [{
+        name: "Mary",
+        age: 10
+    },
+    {
+        name: "Barbara",
+        age: 11
+    },
+    {
+        name: "David",
+        age: 12
+    },
+    {
+        name: "Alex",
+        age: 11
+    }
+
+    ];
+    for (var i = 0; i < students.length; i++){
+    for (property in students[i]) {
+    
+        //dot notation does not access property values
+        console.log(property);
+
+        //bracket notation does
+       console.log(students[i][property]);
+    }
+}
+</script>
+
+</html>

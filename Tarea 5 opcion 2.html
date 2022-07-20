@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Arrays</title>
+</head>
+
+<body>
+
+</body>
+<script>
+    var students = ['Maria', 'Barbara', 'David', 'Maria Jose', 'Maria Teresa']
+
+    var students = students.filter(function (name) {
+        var result = name.includes("Maria");
+        if (!result) {
+            return name;
+        }
+    });
+    console.log(students)
+</script>
+
+</html>

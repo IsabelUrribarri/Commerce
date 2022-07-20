@@ -1,0 +1,129 @@
+<html>
+
+<head>
+    <title>Image Carousel</title>
+    <style>
+        .imageCarousel {
+            height: 50%;
+            width: 50%;
+            margin: 20px auto;
+        }
+
+        .imageCarousel>img {
+            width: 100%;
+            opacity: 1;
+
+            transition: opacity 0.5s;
+            -webkit-transition: opacity 0.5s;
+            -moz-transition: opacity 0.5s;
+            -o-transition: opacity 0.5s;
+        }
+
+        #prev-button,
+        #next-button {
+            display: inline-block;
+            padding: 8px 12px;
+            width: auto;
+            overflow: hidden;
+            text-align: center;
+            vertical-align: middle;
+            outline: none;
+
+            /* inherit font & color from ancestor */
+            color: inherit;
+            font: inherit;
+
+            /* Normalize `line-height`. Cannot be changed from `normal` in Firefox 4+. */
+            line-height: normal;
+
+            /* Corrects font smoothing for webkit */
+            -webkit-font-smoothing: inherit;
+            -moz-osx-font-smoothing: inherit;
+
+            /* Corrects inability to style clickable `input` types in iOS */
+            -webkit-appearance: none;
+
+            cursor: pointer;
+
+            /* colors */
+            color: white;
+            background-color: rgba(0, 0, 0, 0.8);
+
+            /* border */
+            border-radius: 50%;
+
+            /* CSS Transitions */
+            transition: background-color 0.5s ease;
+            -webkit-transition: background-color 0.5s ease;
+            -moz-transition: background-color 0.5s ease;
+            -o-transition: background-color 0.5s ease;
+
+            transition: color 0.5s ease;
+            -webkit-transition: color 0.5s ease;
+            -moz-transition: color 0.5s ease;
+            -o-transition: color 0.5s ease;
+        }
+
+        #prev-button:hover,
+        #next-button:hover {
+            color: black;
+            background: white;
+        }
+
+        /* Positioning */
+        #prev-button {
+            position: absolute;
+            top: 25%;
+            margin-left: 5px;
+        }
+
+        #next-button {
+            position: absolute;
+            top: 25%;
+            right: 25%;
+            margin-right: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="imageCarousel">
+        <img src="/Img/perrito1.jfif">
+        <button id="prev-button">atras</button>
+        <button id="next-button">adelante</button>
+    </div>
+</body>
+<script>
+    var posicion = 0;
+    var imagenes = [
+        "/Img/perrito1.jfif",
+        "/Img/perrito2.jpg",
+        "/Img/perrito3.jpg",
+        "/Img/perrito4.jpg",
+        "/Img/perrito5.jpg"
+    ];
+    var currentIndex = 0;
+
+    var img = document.querySelector('img');
+    var next = document.getElementById('next-button');
+
+    var incrementIndex = function () {
+        currentIndex = currentIndex + 1;
+        if (currentIndex > imagenes.length - 1) { currentIndex = 0 }
+        return currentIndex;
+    }
+    var decrementIndex = function () {
+        currentIndex = currentIndex - 1;
+        if (currentIndex < 0) { currentIndex = imagenes.length -1 }
+        return currentIndex;
+    }
+    next.onclick = function () {
+        img.setAttribute('src', imagenes[incrementIndex()]);
+    }
+    var prev = document.getElementById('prev-button')
+    prev.onclick = function () {
+        img.setAttribute('src', imagenes[decrementIndex()]);
+    }
+</script>
+
+</html>

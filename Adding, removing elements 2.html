@@ -1,0 +1,21 @@
+<html>
+
+<head>
+    <title>Removing HTML Elements</title>
+</head>
+
+<body>
+    <div id="content">
+        <h1>Removing an HTML Element</h1>
+        <p>This element will be removed.</p>
+    </div>
+</body>
+<script>
+    var content = document.querySelector('#content');
+    var contentParagraph = document.querySelector('#content > p');
+
+    var oldElement = content.removeChild(contentParagraph);
+    console.log(oldElement.innerHTML);
+</script>
+
+</html>

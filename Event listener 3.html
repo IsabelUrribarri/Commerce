@@ -1,0 +1,20 @@
+<html>
+
+<head>
+    <title>Data Binding with oninput</title>
+</head>
+
+<body>
+    <h1 id="inputContent"></h1>
+    <input type="text" name="textInput" id="textInput" placeholder="Write here to change the h1 element's contents">
+</body>
+<script>
+    var inputContent = document.getElementById('inputContent');
+    var textInput = document.getElementById('textInput');
+
+    textInput.oninput = function () {
+        inputContent.innerHTML = this.value;
+    }
+</script>
+
+</html>

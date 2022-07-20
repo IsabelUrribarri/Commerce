@@ -1,0 +1,24 @@
+<html>
+
+<head>
+    <script type="text/javascript" src="https://code.jquery.com/jquery-1.12.0.js"></script>
+</head>
+
+<body>
+    <input type="checkbox" name="checkbox" id="checkbox">
+    <label for="checkbox" id="checkStatus">Not Checked</label>
+</body>
+<script>
+    var checkStatus = document.getElementById('checkStatus');
+    var checkbox = document.getElementById('checkbox');
+
+    checkbox.onchange = function () {
+        if (this.checked) {
+            checkStatus.innerHTML = "Checked";
+        } else {
+            checkStatus.innerHTML = "Not Checked";
+        }
+    }
+</script>
+
+</html>

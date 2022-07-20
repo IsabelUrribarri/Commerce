@@ -1,0 +1,19 @@
+<html>
+
+<head>
+    <title>Applying Multiple Styles</title>
+</head>
+
+<body>
+    <h1>Highlight this element on a click</h1>
+</body>
+<script>
+    var h1 = document.querySelector('h1');
+
+    h1.onclick = function () {
+        this.style.color = 'white';
+        this.style.backgroundColor = 'blue';
+    }
+</script>
+
+</html>

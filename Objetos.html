@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Object</title>
+</head>
+
+<body>
+
+</body>
+<script>
+    var student = {
+        name: "Mary",
+        age: 10,
+        grades: {
+            quiz1: 90,
+            quiz2: 88,
+            quiz3: 95
+
+        }
+    }
+    var student2 = {
+        name: "Luis",
+        age: 11
+    }
+    student.gender = "female";
+    student["height"] = "122cm";
+
+    console.log(student);
+    // accessing values using dot notation 
+
+    // is the same as accessing values using bracket notation
+    console.log(student2["name"]);
+    console.log(student2["age"]);
+</script>
+
+</html>

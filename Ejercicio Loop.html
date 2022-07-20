@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Ejercicio</title>
+</head>
+
+<body>
+
+</body>
+<script>
+    var rangeSum = function (number) {
+        var sum = 0;
+        if (number < 0) {
+            var i = 0
+            while (i >= number) {
+                sum = sum + i
+                i--
+            }
+        }
+        else {
+            var i = 0
+            while (i <= number) {
+                sum = sum + i
+                i++
+            }
+        }
+        return sum;
+    }
+    console.log(rangeSum(-7))
+</script>
+
+</html>

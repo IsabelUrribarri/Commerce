@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Ejercicio</title>
+</head>
+
+<body>
+
+</body>
+<script>
+    var Helado = function (sabor, precio, tipo) {
+        this.sabor = sabor;
+        this.precio = precio;
+        this.tipo = tipo;
+    }
+    var helado2 = new Helado("Cafe", 0.8, "Barquilla");
+    var helado1 = new Helado("Torta suiza", 1.2, "Barquilla");
+    var helado3 = new Helado("Limon", 0.6, "Barquilla");
+    var helado4 = new Helado("Uva", 0.7, "Tinita");
+    var sabores = "Los sabores que tengo son: ";
+    var precio = "Los precios son: ";
+
+    var helados = [helado1, helado2, helado3, helado4, new Helado("Mantechoco", 1.1, "Barquilla")];
+    for (var i = 0; i < helados.length; i++) {
+        helado = helados[i]
+        if (i == 0) {
+
+
+            sabores = sabores + " " + helado.sabor;
+            precio = precio + " " + helado.sabor + " " + helado.precio;
+        }
+        else {
+            sabores = sabores + ", " + helado.sabor;
+            precio = precio + ", " + helado.sabor + " " + helado.precio;   
+        }
+    }
+
+    console.log(sabores);
+    console.log(precio);
+</script>
+
+</html>

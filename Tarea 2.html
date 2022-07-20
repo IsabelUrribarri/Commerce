@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+    <title>Asistencia</title>
+    <style>
+        div {
+            margin: 20px;
+            border: 10px solid blue;
+            border-bottom-color: green;
+            border-top-style: dotted;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Asistencia</h1>
+    <form>
+        <div>
+            <label for="fecha">
+                Fecha:
+                <input type="date" id="fecha" name="fecha">
+            </label>
+        </div>
+        <div>
+            <label for="hora">
+                Hora:
+                <input type="time" id="hora" name="hora">
+            </label>
+        </div>
+        <div>
+            <label for="nombre">
+                Nombre:
+                <input type="text" id="nombre" name="nombre" size="15">
+            </label>
+        </div>
+        <div>Status:</div>
+        <div>
+            <label for="status">
+                <input type="radio" id="vista" name="status_clase" value="vista">
+                <label for="vista">Vista</label><br>
+                <input type="radio" id="pospuesta" name="status_clase" value="pospuesta">
+                <label for="pospuesta">Pospuesta</label><br>
+                <input type="radio" id="eliminada" name="status_clase" value="eliminada">
+                <label for="eliminada">Eliminada</label>
+            </label>
+        </div>
+        <div>
+        <input type="submit">
+    </div>
+    </form>
+</body>
+
+</html>

@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Arrays</title>
+</head>
+
+<body>
+
+</body>
+<script>
+    /*ejemplo 
+    var printStudents = function(students){
+      //iterate over the students array
+      for(var i = 0; i < students.length; i++){
+        //print student number
+        console.log("Student " + i + ": ");
+        
+        //iterate over each sub-array
+        for(var j = 0; j < students[i].length; j++){
+          //print sub-array contents
+          console.log(students[i][j]);
+        }
+      }
+    }
+    
+    printStudents(students);
+    */
+    var numbers = [
+        [1, 2, 3, 4],
+        [5, 6, 7],
+        [8, 9, 10, 11, 12]
+    ];
+
+
+    var arraySum = function (numbers) {
+        var sums = []
+        for (var i = 0; i < numbers.length; i++) {
+            var sum = 0;
+            for (var j = 0; j < numbers[i].length; j++) {
+                sum = sum + numbers[i][j];
+            }
+            sums[i] = sum;
+        }
+        return sums;
+    }
+    arraySum(numbers);
+    console.log(arraySum(numbers));
+</script>
+
+</html>

@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Arrays</title>
+</head>
+
+<body>
+
+</body>
+<script>
+    var students = [{
+        'nombre': 'Maria',
+    }, {
+        'nombre': 'Barbara',
+    }, {
+        'nombre': 'David',
+    }, {
+        'nombre': 'Maria Jose',
+    }, {
+        'nombre': 'Maria Teresa',
+    }]
+
+    var students = students.filter(function (students) {
+        return students.nombre !== 'Barbara';
+    });
+    console.log(students)
+</script>
+
+</html>

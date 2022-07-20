@@ -1,0 +1,71 @@
+<html>
+
+<head>
+    <title>CSS Margins</title>
+    <style>
+        #contenedor {
+            width: 50%;
+            border: 5px solid greenyellow;
+            height: 360px;
+
+        }
+
+        /* 1 value: margin applied as
+	 same on all sides */
+        #margin1 {
+            margin: 10px;
+        }
+
+        /* 2 values: margin applied as 
+	 vertical sides - horizontal sides */
+        #margin2 {
+            margin: 10px 20px;
+        }
+
+        /* 3 values: margin applied as 
+   top - horizontal sides - bottom */
+        #margin3 {
+            margin: 10px 20px 30px;
+        }
+
+        /* 4 values: margin applied as 
+   top - right - bottom - left */
+        #margin4 {
+            margin: 10px 20px 30px 40px;
+        }
+
+        .spanBox {
+            border: 1px dashed black;
+            margin: 5px;
+            float: left;
+
+        }
+
+        span {
+            background-color: plum;
+            border: 5px solid green;
+            padding: 10px 20px;
+            display: inline-block;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="contenedor">
+        <div class="spanBox">
+            <span id="margin1">One Value</span>
+        </div>
+        <div class="spanBox">
+            <span id="margin2">Two Values</span>
+        </div>
+        <div class="spanBox">
+            <span id="margin3">Three Values</span>
+        </div>
+        <div class="spanBox">
+            <span id="margin4">Four Values</span>
+        </div>
+    </div>
+
+</body>
+
+</html>

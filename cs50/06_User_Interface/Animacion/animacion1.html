@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Animate</title>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+
+            // Find heading
+            const h1 = document.querySelector('h1');
+
+            // Pause Animation by default
+            h1.style.animationPlayState = 'paused';
+
+            // Wait for button to be clicked
+            document.querySelector('button').onclick = () => {
+
+                // If animation is currently paused, begin playing it
+                if (h1.style.animationPlayState == 'paused') {
+                    h1.style.animationPlayState = 'running';
+                }
+
+                // Otherwise, pause the animation
+                else {
+                    h1.style.animationPlayState = 'paused';
+                }
+            }
+
+        })
+    </script>
+    <style>
+        @keyframes grow {
+            from {
+                font-size: 20px;
+            }
+
+            to {
+                font-size: 100px;
+            }
+        }
+
+        h2 {
+            animation-name: grow;
+            animation-duration: 4s;
+            animation-fill-mode: forwards;
+        }
+
+        @keyframes move {
+            0% {
+                left: 0%;
+            }
+
+            50% {
+                left: 80%;
+            }
+
+            100% {
+                left: 0%;
+            }
+        }
+
+        h1 {
+            position: relative;
+            animation-name: move;
+            animation-duration: 2s;
+            animation-fill-mode: forwards;
+            animation-iteration-count: 5;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Welcome!</h1>
+    <!-- <h2>Bye!</h2>-->
+    <button>Click</button>
+</body>
+
+</html>

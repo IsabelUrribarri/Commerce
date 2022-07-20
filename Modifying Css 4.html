@@ -1,0 +1,38 @@
+<html>
+
+<head>
+    <title>Element.classList Exercise</title>
+    <style>
+        img {
+            opacity: 1;
+            width: 100%;
+            transition: opacity 1s ease;
+        }
+
+        .invisible {
+            opacity: 0.2;
+        }
+
+        .imgContainer {
+            width: 50%;
+            margin: 20px auto;
+            border: 1px solid black;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="imgContainer">
+        <img src="https://cdn2.cocinadelirante.com/sites/default/files/styles/gallerie/public/images/2016/06/istock67211621small.jpg">
+    </div>
+</body>
+<script>
+    var img = document.querySelector('img')
+    img.onclick = function () {
+        this.classList.toggle('invisible')
+    }
+
+
+</script>
+
+</html>

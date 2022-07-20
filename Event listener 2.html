@@ -1,0 +1,51 @@
+<html>
+
+<head>
+    <style>
+        * {
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+        }
+
+        button {
+            font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+            font-weight: normal;
+            font-size: 3em;
+            text-align: center;
+            border: 2px solid #ff7272;
+            width: 50%;
+            margin: 20px auto;
+            padding: 20px 40px;
+            color: #ff7272;
+            background-color: white;
+            display: block;
+            cursor: pointer;
+        }
+    </style>
+    <title>Exercise: DOM manipulations using onclick event listener</title>
+</head>
+
+<body>
+    <button type="button">Click Me!</button>
+</body>
+<script>
+    // random color generator 
+    var randomColor = function () {
+        var rvalue = function () {
+            return Math.round(Math.random() * 255);
+        }
+
+        return 'rgb(' + rvalue() + "," + rvalue() + "," + rvalue() + ")";
+    }
+
+    // get button element from DOM
+    var button = document.querySelector('button');
+
+    // create event listener to change color on button click
+    button.onclick = function () {
+        this.style.color = randomColor();
+        this.style.background = randomColor();
+        this.style.fontSize = Math.random() *100;
+    }
+</script>
+
+</html>

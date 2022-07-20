@@ -1,0 +1,29 @@
+<html>
+
+<head>
+    <title>Applying Multiple Styles</title>
+    <style>
+        .highlight {
+            color: white;
+            background-color: blue;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Highlight this element on a click</h1>
+    <button>Boton</button>
+</body>
+<script>
+    var h1 = document.querySelector('h1');
+
+    h1.onclick = function () {
+        this.classList.toggle('highlight');
+    }
+    var boton = document.querySelector('button')
+    boton.onclick = function () {
+        this.classList.add('highlight')
+    }
+</script>
+
+</html>
