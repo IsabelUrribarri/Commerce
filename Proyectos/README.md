@@ -1,2 +1,0 @@
-# IsabelUrribarri
-Proyecto 1
