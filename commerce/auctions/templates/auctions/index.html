@@ -1,5 +1,17 @@
 {% extends "auctions/layout.html" %}
-{% load static %}
+{% block body %}
+
+{% if logueado %}
+<h1>Hola estoy logueado</h1>
+{% else %}
+<h1>Hola no estoy logueado</h1>
+{% endif %}
+
+
+{% endblock %}
+
+
+<!-- {% load static %}
 {% block watchlist %}
 
 
@@ -35,4 +47,4 @@
 </ul>
 {% else %}
 {% endif %}
-{% endblock %}
+{% endblock %} -->

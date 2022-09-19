@@ -9,12 +9,23 @@ from .models import AuctionList, User
 
 def index(request):
     user = request.user
-    list = json.loads(user.watchlist)
-    contador = len(list)
-    return render(request, "auctions/index.html", {
-        "auctions": AuctionList.objects.filter(active=True),
-        "contador": contador
-    })
+    if user is not None:
+        # list = json.loads(user.watchlist)
+        # contador = len(list) 
+        list = [2,3]
+        contador = 2
+        return render(request, "auctions/index.html", {
+           "auctions": AuctionList.objects.filter(active=True),
+           "contador": contador,
+           "logueado": False
+        })
+    else:
+        return render(request, "auctions/index.html", {
+           "auctions": AuctionList.objects.filter(active=True),
+           "contador": contador,
+           "logueado": True
+        })
+        
 
 
 def login_view(request):
