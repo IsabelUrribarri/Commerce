@@ -11,7 +11,7 @@
 </head>
 
 <body>
-    <!-- <h1>Auctions</h1>
+    <h1>Auctions</h1>
     <div>
         {% if user.is_authenticated %}
         Signed in as <strong>{{ user.username }}</strong>.
@@ -28,7 +28,8 @@
             <a class="nav-link" href="{% url 'new_auction' %}">Create Listing</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" href="{% url 'watchlist' %}">Watchlist {{ contador }}</a>
+            <a class="nav-link" href="{% url 'watchlist' %}">Watchlist <div class="d-inline font-weight-bold btn btn-secondary btn-sm">{{ contador }}</div></a>
+
         </li>
         {% block watchlist %}
         {% endblock %}
@@ -45,7 +46,7 @@
         </li>
         {% endif %}
     </ul>
-    <hr> -->
+    <hr>
     {% block body %}
     {% endblock %}
 </body>

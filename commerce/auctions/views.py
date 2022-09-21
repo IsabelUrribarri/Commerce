@@ -1,3 +1,4 @@
+import re
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
@@ -9,24 +10,18 @@ from .models import AuctionList, User
 
 def index(request):
     user = request.user
-    if user is not None:
-        # list = json.loads(user.watchlist)
-        # contador = len(list) 
-        list = [2,3]
-        contador = 2
+    if user.is_authenticated:
+        list = json.loads(user.watchlist)
+        contador = len(list) 
         return render(request, "auctions/index.html", {
            "auctions": AuctionList.objects.filter(active=True),
-           "contador": contador,
-           "logueado": False
+           "contador": contador
         })
     else:
         return render(request, "auctions/index.html", {
            "auctions": AuctionList.objects.filter(active=True),
-           "contador": contador,
-           "logueado": True
+           "contador": 0
         })
-        
-
 
 def login_view(request):
     if request.method == "POST":
@@ -130,4 +125,15 @@ def add_to_watchlist(request, id):
 
 
 def watchlist(request):
-    return HttpResponseRedirect(reverse("index"))
+    user = request.user
+    items = json.loads(user.watchlist)
+    auction_objects = []
+    for item in items:
+        auction_objects.append(AuctionList.objects.filter(id=2))
+    auction_list = AuctionList.objects.filter(id=2)
+    contador = len(auction_list)
+    return HttpResponse(user.watchlist)
+    # return render(request, "auctions/index.html", {
+    #     "auctions":auction_list,
+    #     "contador": contador
+    # })
