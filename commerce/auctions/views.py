@@ -126,14 +126,21 @@ def add_to_watchlist(request, id):
 
 def watchlist(request):
     user = request.user
-    items = json.loads(user.watchlist)
-    auction_objects = []
-    for item in items:
-        auction_objects.append(AuctionList.objects.filter(id=2))
-    auction_list = AuctionList.objects.filter(id=2)
-    contador = len(auction_list)
-    return HttpResponse(user.watchlist)
-    # return render(request, "auctions/index.html", {
-    #     "auctions":auction_list,
-    #     "contador": contador
-    # })
+    ids = json.loads(user.watchlist)
+    watchlist = []
+    for id in ids:
+        watchlist.append(AuctionList.objects.get(id=id))
+    contador = len(watchlist)
+    return render(request, "auctions/index.html", {
+        "auctions": watchlist,
+        "contador": contador
+    })
+
+def categories(request):
+    user = request.user
+    ids = json.loads(user.watchlist)
+    contador = len(ids)
+    return render(request, "auctions/categories.html", {
+        "contador": contador
+       
+    })
