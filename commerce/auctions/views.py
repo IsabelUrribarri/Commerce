@@ -5,7 +5,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.urls import reverse
 import json
-from .models import AuctionList, User
+from .models import AuctionList, Category, User
 
 
 def index(request):
@@ -137,9 +137,14 @@ def watchlist(request):
     })
 
 def categories(request):
-    user = request.user
-    ids = json.loads(user.watchlist)
-    contador = len(ids)
+    categories = Category.objects.all()
     return render(request, "auctions/categories.html", {
-        "contador": contador
+        "categories": categories
+    })
+
+def category(request, id):
+    auctions = AuctionList.objects.filter(category=id)
+
+    return render(request, "auctions/index.html", {
+        "auctions": auctions,
     })

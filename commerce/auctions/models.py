@@ -3,9 +3,14 @@ from django.db import models
 import json
 
 
+
 class User(AbstractUser):
     pass
     watchlist = models.CharField(max_length=200)
+
+class Category(models.Model):
+    name = models.CharField(max_length=30)
+    description = models.TextField()
     
 
 class AuctionList(models.Model):
@@ -17,6 +22,7 @@ class AuctionList(models.Model):
     date_creation = models.DateTimeField(auto_now_add=True)
     date_update = models.DateTimeField(auto_now=True)
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name="listing")
+    category = models.ForeignKey(Category, on_delete=models.SET_NULL, related_name="categories", null=True)
 
     def __str__(self):
         return f"{self.id}: {self.title} - {self.description}"
