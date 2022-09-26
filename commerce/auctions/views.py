@@ -142,5 +142,4 @@ def categories(request):
     contador = len(ids)
     return render(request, "auctions/categories.html", {
         "contador": contador
-       
     })
