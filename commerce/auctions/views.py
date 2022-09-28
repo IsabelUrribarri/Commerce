@@ -10,6 +10,8 @@ from .models import AuctionList, Category, User
 
 def index(request):
     user = request.user
+    global contador
+    contador = 0
     if user.is_authenticated:
         list = json.loads(user.watchlist)
         contador = len(list) 
@@ -94,8 +96,12 @@ def new_auction(request):
         return HttpResponseRedirect(reverse("index"))
 
     else:
-        return render(request, "auctions/new_auction.html")
-
+        user = request.user
+        list = json.loads(user.watchlist)
+        contador = len(list)
+        return render(request, "auctions/new_auction.html", {
+            "contador": contador
+        })
 
 def listing(request, id):
     user = request.user
@@ -118,7 +124,12 @@ def listing(request, id):
 def add_to_watchlist(request, id):
     user = request.user
     list = json.loads(user.watchlist)
-    list.append(id)
+    if id in list :
+        list.remove(id)
+    else:
+        list.append(id)
+
+
     user.watchlist = json.dumps(list)
     user.save()
     return HttpResponseRedirect(reverse("listing", args=[id]))
@@ -137,9 +148,13 @@ def watchlist(request):
     })
 
 def categories(request):
+    user = request.user
+    list = json.loads(user.watchlist)
+    contador = len(list)
     categories = Category.objects.all()
     return render(request, "auctions/categories.html", {
-        "categories": categories
+        "categories": categories,
+        "contador" : contador,
     })
 
 def category(request, id):
