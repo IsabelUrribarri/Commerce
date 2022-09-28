@@ -32,9 +32,8 @@
         </li>
         <li class="nav-item">
             <a class="nav-link" href="{% url 'watchlist' %}">Watchlist <div class="d-inline font-weight-bold btn btn-secondary btn-sm">{{ contador }}</div></a>
-
         </li>
-        {% block watchlist %}
+        {% block edit %}
         {% endblock %}
         <li class="nav-item">
             <a class="nav-link" href="{% url 'logout' %}">Log Out</a>

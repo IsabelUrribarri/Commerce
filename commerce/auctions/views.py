@@ -108,6 +108,11 @@ def listing(request, id):
     list = json.loads(user.watchlist)
     contador = len(list)
     listing = AuctionList.objects.get(id=id)
+    category = listing.category
+    if category is None:
+        category = "No category Listed"
+    else:
+        category = listing.category.name
     if len(listing.url_image) == 0:
         withimg = False
     else:
@@ -117,6 +122,7 @@ def listing(request, id):
         "listedby": listing.user.username,
         "withimg": withimg,
         "contador": contador,
+        "category": category,
 
     })
 
@@ -163,3 +169,25 @@ def category(request, id):
     return render(request, "auctions/index.html", {
         "auctions": auctions,
     })
+
+def edit_auction(request,id):
+    user = request.user
+    article = AuctionList.objects.get(id=id)
+    if request.method == "POST":
+        article.title = request.POST["title"]
+        article.description = request.POST["description"]
+        article.price = request.POST["starting_bid"]
+        article.url_image = request.POST["image"]
+        userid = request.POST["userid"]
+        user_object = User.objects.get(id=userid)
+        article.user = user_object
+        article.save()
+        return HttpResponseRedirect(reverse("index"))
+
+    else:
+        list = json.loads(user.watchlist)
+        contador = len(list)
+        return render(request, "auctions/edit_auction.html", {
+            "contador": contador,
+            "listing": article,
+        })

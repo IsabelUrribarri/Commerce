@@ -1,8 +1,20 @@
 {% extends "auctions/layout.html" %}
 
+
+
 {% block title %}
 Listing
 {% endblock %}
+<p>{{ user.id }}</p>
+<p>{{ listing.user.id }}</p>
+{% if user.id == listing.user.id %}
+{% block edit %}
+
+<li class="nav-item">
+    <a class="nav-link" href="{% url 'edit_auction' listing.id %}">Edit</a>
+</li>
+{% endblock %}
+{% endif %}
 
 {% block body %}
 <h1>Listing: {{ listing.title }}</h1>
@@ -28,7 +40,8 @@ Listing
     </form>
     <p class="bigfont">Details</p>
     <ul>
-        <li>Listed by {{ listedby }}</li>
+        <li>Listed by: {{ listedby }}</li>
+        <li>Category: {{ category }}</li>
     </ul>
 
 </div>

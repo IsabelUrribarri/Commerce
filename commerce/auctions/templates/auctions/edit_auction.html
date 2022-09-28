@@ -1,0 +1,29 @@
+{% extends "auctions/layout.html" %}
+
+{% block body %}
+
+
+    {% if user.is_authenticated %}
+    <h2>Edit Auction</h2>
+
+    <form action="{% url 'edit_auction' listing.id %}" method="post">
+        {% csrf_token %}
+        <div class="form-group">
+            <input autofocus class="form-control" type="text" name="title" placeholder="Title" value="{{ listing.title }}">
+        </div>
+        <div class="form-group">
+            <textarea class="form-control" name="description" placeholder="Description" >{{ listing.description }}</textarea>
+        </div>
+        <div class="form-group">
+            <input class="form-control" type="number" min="0" step="0.01" name="starting_bid" placeholder="Starting Bid" value={{ listing.price }}>
+        </div>
+        <div class="form-group">
+            <input class="form-control" type="url" name="image" placeholder="URL Image" value={{ listing.url_image }}>
+        </div>
+        <input type="hidden" name="userid" value="{{ user.id }}" >
+        <input class="btn btn-primary" type="submit" value="Save">
+    </form>
+    {% else %}
+    {% endif %}
+
+{% endblock %}
