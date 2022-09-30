@@ -25,6 +25,21 @@ def index(request):
            "contador": 0
         })
 
+def my_listings(request):
+    user = request.user
+    if user.is_authenticated:
+        list = json.loads(user.watchlist)
+        contador = len(list) 
+        return render(request, "auctions/index.html", {
+           "auctions": AuctionList.objects.filter(user=user),
+           "contador": contador
+        })
+    else:
+        return render(request, "auctions/index.html", {
+           "auctions": AuctionList.objects.filter(active=True),
+           "contador": 0
+        })
+
 def login_view(request):
     if request.method == "POST":
 
@@ -103,7 +118,7 @@ def new_auction(request):
             "contador": contador
         })
 
-def listing(request, id):
+def listing(request, id): 
     user = request.user
     list = json.loads(user.watchlist)
     contador = len(list)
@@ -173,8 +188,20 @@ def category(request, id):
 def edit_auction(request,id):
     user = request.user
     article = AuctionList.objects.get(id=id)
+    category = article.category
+    if category is None:
+        category = "No category Listed"
+    else:
+        category = article.category.name
+    
     if request.method == "POST":
         article.title = request.POST["title"]
+        category_id = request.POST["categories"]
+        article.category = Category.objects.get(id=category_id) 
+        if "active" in request.POST:
+            article.active = True
+        else:
+            article.active = False
         article.description = request.POST["description"]
         article.price = request.POST["starting_bid"]
         article.url_image = request.POST["image"]
@@ -190,4 +217,5 @@ def edit_auction(request,id):
         return render(request, "auctions/edit_auction.html", {
             "contador": contador,
             "listing": article,
+            "categories": Category.objects.all(),
         })

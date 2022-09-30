@@ -11,7 +11,8 @@ class User(AbstractUser):
 class Category(models.Model):
     name = models.CharField(max_length=30)
     description = models.TextField()
-    
+    def __str__(self):
+        return f"{self.id}: {self.name} - {self.description}"
 
 class AuctionList(models.Model):
     active = models.BooleanField()

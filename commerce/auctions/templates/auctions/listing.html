@@ -5,16 +5,16 @@
 {% block title %}
 Listing
 {% endblock %}
-<p>{{ user.id }}</p>
-<p>{{ listing.user.id }}</p>
-{% if user.id == listing.user.id %}
 {% block edit %}
+{% if user.id == listing.user.id %}
 
 <li class="nav-item">
     <a class="nav-link" href="{% url 'edit_auction' listing.id %}">Edit</a>
 </li>
-{% endblock %}
+
 {% endif %}
+{% endblock %}
+
 
 {% block body %}
 <h1>Listing: {{ listing.title }}</h1>
