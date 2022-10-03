@@ -24,7 +24,9 @@ Listing
 </form>
 <div class="container">
     {% if withimg %}
-    <img class="imgdetail" src="{{ listing.url_image }}">
+    <div class="d-flex" style="background-color: purple; width: 18%;">
+        <img class="imgdetail mx-4" src="{{ listing.url_image }}">
+    </div>
     {% endif %}
 </div>
 <div>
