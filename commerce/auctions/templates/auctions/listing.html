@@ -30,7 +30,8 @@ Listing
 <div>
     <p>{{listing.description}}</p>
     <p class="bigfont">${{ listing.price }}</p>
-    <form>
+    <form action="{% url 'listing' listing.id %}" method="post">
+        {% csrf_token %}
         <div class="form-group">
             <input class="form-control" type="number" min="0" step="0.01" placeholder="Bid" name="placebid">
         </div>
