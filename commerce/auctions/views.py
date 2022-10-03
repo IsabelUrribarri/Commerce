@@ -133,27 +133,30 @@ def new_auction(request):
         })
 
 def listing(request, id): 
-    user = request.user
-    list = json.loads(user.watchlist)
-    contador = len(list)
-    listing = AuctionList.objects.get(id=id)
-    category = listing.category
-    if category is None:
-        category = "No category Listed"
-    else:
-        category = listing.category.name
-    if len(listing.url_image) == 0:
-        withimg = False
-    else:
-        withimg = True
-    return render(request, "auctions/listing.html", {
-        "listing": listing,
-        "listedby": listing.user.username,
-        "withimg": withimg,
-        "contador": contador,
-        "category": category,
+    if request.method == "GET":
+        user = request.user
+        list = json.loads(user.watchlist)
+        contador = len(list)
+        listing = AuctionList.objects.get(id=id)
+        category = listing.category
+        if category is None:
+            category = "No category Listed"
+        else:
+            category = listing.category.name
+        if len(listing.url_image) == 0:
+            withimg = False
+        else:
+            withimg = True
+        return render(request, "auctions/listing.html", {
+            "listing": listing,
+            "listedby": listing.user.username,
+            "withimg": withimg,
+            "contador": contador,
+            "category": category,
+        })
+    elif request.method == "POST":
+        return HttpResponse("grabar la oferta")
 
-    })
 
 
 def add_to_watchlist(request, id):
