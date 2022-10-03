@@ -13,8 +13,12 @@ def index(request):
     global contador
     contador = 0
     if user.is_authenticated:
-        list = json.loads(user.watchlist)
-        contador = len(list) 
+        if user.watchlist == "":
+            list = []
+            contador = 0 
+        else:
+            list = json.loads(user.watchlist)
+            contador = len(list) 
         return render(request, "auctions/index.html", {
            "auctions": AuctionList.objects.filter(active=True),
            "contador": contador
@@ -86,6 +90,9 @@ def register(request):
             return render(request, "auctions/register.html", {
                 "message": "Username already taken."
             })
+        if user.watchlist == "":
+            user.watchlist = "[]"
+        user.save()
         login(request, user)
         return HttpResponseRedirect(reverse("index"))
     else:
@@ -99,6 +106,8 @@ def new_auction(request):
         starting_bid = request.POST["starting_bid"]
         url_image = request.POST["image"]
         auction = AuctionList()
+        category_id = request.POST["categories"]
+        auction.category = Category.objects.get(id=category_id) 
         auction.active = True
         auction.title = title
         auction.description = description
@@ -112,10 +121,15 @@ def new_auction(request):
 
     else:
         user = request.user
-        list = json.loads(user.watchlist)
-        contador = len(list)
+        if user.watchlist == "":
+            list = []
+            contador = 0 
+        else:
+            list = json.loads(user.watchlist)
+            contador = len(list) 
         return render(request, "auctions/new_auction.html", {
-            "contador": contador
+            "contador": contador,
+            "categories":Category.objects.all()
         })
 
 def listing(request, id): 
@@ -179,10 +193,14 @@ def categories(request):
     })
 
 def category(request, id):
+    user = request.user
     auctions = AuctionList.objects.filter(category=id)
+    list = json.loads(user.watchlist)
+    contador = len(list)
 
     return render(request, "auctions/index.html", {
         "auctions": auctions,
+        "contador": contador,
     })
 
 def edit_auction(request,id):
