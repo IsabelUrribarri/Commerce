@@ -5,7 +5,7 @@ from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.urls import reverse
 import json
-from .models import AuctionList, Category, User
+from .models import AuctionList, Category, User, Bid
 
 
 def index(request):
@@ -133,29 +133,46 @@ def new_auction(request):
         })
 
 def listing(request, id): 
+    user = request.user
+    auction = AuctionList.objects.get(id=id)
+    category = auction.category
+    if category is None:
+        category = "No category Listed"
+    else:
+        category = auction.category.name
+    if len(auction.url_image) == 0:
+        withimg = False
+    else:
+        withimg = True
+    list = json.loads(user.watchlist)
+    contador = len(list)
     if request.method == "GET":
-        user = request.user
-        list = json.loads(user.watchlist)
-        contador = len(list)
-        listing = AuctionList.objects.get(id=id)
-        category = listing.category
-        if category is None:
-            category = "No category Listed"
-        else:
-            category = listing.category.name
-        if len(listing.url_image) == 0:
-            withimg = False
-        else:
-            withimg = True
+        bids = Bid.objects.filter(auction=auction)
+        bids_total = len(bids)
+        amount = None
+        for bid in bids:
+            if bid.user == user:
+                amount = bid.amount
         return render(request, "auctions/listing.html", {
-            "listing": listing,
-            "listedby": listing.user.username,
+            "listing": auction,
+            "listedby": auction.user.username,
             "withimg": withimg,
             "contador": contador,
             "category": category,
+            "bids_total": bids_total, 
+            "amount": amount,
         })
     elif request.method == "POST":
-        return HttpResponse("grabar la oferta")
+        if float(request.POST["placebid"]) <= auction.price:
+            return HttpResponse("no puedes bajarle el precio")
+        bid = Bid()
+        bid.amount = float(request.POST["placebid"])
+        bid.user = user
+        bid.auction = AuctionList.objects.get(id=id)
+        bid.save()
+        auction.price = bid.amount
+        auction.save()
+        return HttpResponseRedirect(reverse("listing", args=[id]))
 
 
 def add_to_watchlist(request, id):
