@@ -134,6 +134,11 @@ def new_auction(request):
 
 def listing(request, id): 
     user = request.user
+    if user.watchlist == "":
+        user.watchlist = "[]"
+    user.save()
+    global message_bid 
+    message_bid = None
     auction = AuctionList.objects.get(id=id)
     category = auction.category
     if category is None:
@@ -150,9 +155,17 @@ def listing(request, id):
         bids = Bid.objects.filter(auction=auction)
         bids_total = len(bids)
         amount = None
+        max = 0
         for bid in bids:
+            if bid.amount > max:
+                max = bid.amount
             if bid.user == user:
                 amount = bid.amount
+        if max == amount:
+            current_bid_message = "Your bid is the current bid."
+        else:
+            current_bid_message = "Your bid is not the current bid."
+        
         return render(request, "auctions/listing.html", {
             "listing": auction,
             "listedby": auction.user.username,
@@ -161,19 +174,49 @@ def listing(request, id):
             "category": category,
             "bids_total": bids_total, 
             "amount": amount,
+            "message": message_bid,
+            "bids_message": f"{bids_total} bid(s) so far. {current_bid_message} ",
         })
     elif request.method == "POST":
-        if float(request.POST["placebid"]) <= auction.price:
-            return HttpResponse("no puedes bajarle el precio")
-        bid = Bid()
+        bids = Bid.objects.filter(auction=auction)
+        bids_total = len(bids)
+        amount = None
+        max = 0
+        for bid in bids:
+            if bid.amount > max:
+                max = bid.amount
+            if bid.user == user:
+                amount = bid.amount
+        if max == amount:
+            current_bid_message = "Your bid is the current bid."
+        else: 
+            current_bid_message = "Your bid is not the current bid."
+        if float(request.POST["placebid"]) <= auction.price: 
+            message_bid = "Bid must be bigger than actual bid"
+        if amount is None:
+            bid = Bid()
+        else:
+            bids = Bid.objects.filter(auction=auction, user=user)
+            bid = bids[0] 
+        if bid.amount == max:
+            auction.price = bid.amount
+        auction.save()
         bid.amount = float(request.POST["placebid"])
         bid.user = user
-        bid.auction = AuctionList.objects.get(id=id)
+        bid.auction = auction
         bid.save()
-        auction.price = bid.amount
-        auction.save()
-        return HttpResponseRedirect(reverse("listing", args=[id]))
 
+        return render(request, "auctions/listing.html", {
+            "listing": auction,
+            "listedby": auction.user.username,
+            "withimg": withimg,
+            "contador": contador,
+            "category": category,
+            "bids_total": bids_total, 
+            "amount": bid.amount,
+            "message": message_bid,
+            "bids_message": f"{bids_total} bid(s) so far. {current_bid_message}",
+        })
 
 def add_to_watchlist(request, id):
     user = request.user
