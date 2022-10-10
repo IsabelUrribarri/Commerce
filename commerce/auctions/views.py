@@ -161,10 +161,13 @@ def listing(request, id):
                 max = bid.amount
             if bid.user == user:
                 amount = bid.amount
-        if max == amount:
-            current_bid_message = "Your bid is the current bid."
+        if request.user == auction.user:
+            current_bid_message = f"The highest bidder belongs to {auction.user.username} "
         else:
-            current_bid_message = "Your bid is not the current bid."
+            if max == amount:
+                current_bid_message = "Your bid is the current bid."
+            else:
+                current_bid_message = "Your bid is not the current bid."
         
         return render(request, "auctions/listing.html", {
             "listing": auction,
@@ -173,7 +176,7 @@ def listing(request, id):
             "contador": contador,
             "category": category,
             "bids_total": bids_total, 
-            "amount": amount,
+            "amount": auction.price,
             "message": message_bid,
             "bids_message": f"{bids_total} bid(s) so far. {current_bid_message} ",
         })
@@ -193,29 +196,40 @@ def listing(request, id):
             current_bid_message = "Your bid is not the current bid."
         if float(request.POST["placebid"]) <= auction.price: 
             message_bid = "Bid must be bigger than actual bid"
+            return render(request, "auctions/listing.html", {
+                "listing": auction,
+                "listedby": auction.user.username,
+                "withimg": withimg,
+                "contador": contador,
+                "category": category,
+                "bids_total": bids_total, 
+                "amount": float(request.POST["placebid"]),
+                "message": message_bid,
+                "bids_message": f"{bids_total} bid(s) so far. {current_bid_message}",
+            })
         if amount is None:
             bid = Bid()
         else:
             bids = Bid.objects.filter(auction=auction, user=user)
             bid = bids[0] 
-        if bid.amount == max:
-            auction.price = bid.amount
+        auction.price = float(request.POST["placebid"])
         auction.save()
         bid.amount = float(request.POST["placebid"])
         bid.user = user
         bid.auction = auction
         bid.save()
 
+        current_bid_message = "Your bid is the current bid."
         return render(request, "auctions/listing.html", {
             "listing": auction,
             "listedby": auction.user.username,
             "withimg": withimg,
             "contador": contador,
             "category": category,
-            "bids_total": bids_total, 
-            "amount": bid.amount,
+            "bids_total": len(Bid.objects.filter(auction=auction)), 
+            "amount": auction.price,
             "message": message_bid,
-            "bids_message": f"{bids_total} bid(s) so far. {current_bid_message}",
+            "bids_message": f"{len(Bid.objects.filter(auction=auction))} bid(s) so far. {current_bid_message}",
         })
 
 def add_to_watchlist(request, id):
@@ -299,3 +313,12 @@ def edit_auction(request,id):
             "listing": article,
             "categories": Category.objects.all(),
         })
+
+def close_auction(request,id):
+    article = AuctionList.objects.get(id=id)
+    if request.method == "POST":
+        if "active" in request.POST:
+            article.active = False
+    article.save()
+    return HttpResponse("se inactivo la oferta")
+    # return HttpResponseRedirect(reverse("index"))
