@@ -7,7 +7,6 @@ from django.urls import reverse
 import json
 from .models import AuctionList, Category, User, Bid
 
-
 def index(request):
     user = request.user
     global contador
@@ -41,6 +40,21 @@ def my_listings(request):
     else:
         return render(request, "auctions/index.html", {
            "auctions": AuctionList.objects.filter(active=True),
+           "contador": 0
+        })
+
+def all_listings(request):
+    user = request.user
+    if user.is_authenticated:
+        list = json.loads(user.watchlist)
+        contador = len(list) 
+        return render(request, "auctions/index.html", {
+           "auctions": AuctionList.objects.all(),
+           "contador": contador
+        })
+    else:
+        return render(request, "auctions/index.html", {
+           "auctions": AuctionList.objects.all(),
            "contador": 0
         })
 
@@ -168,7 +182,15 @@ def listing(request, id):
                 current_bid_message = "Your bid is the current bid."
             else:
                 current_bid_message = "Your bid is not the current bid."
-        
+
+        message_final = f"{bids_total} bid(s) so far. {current_bid_message} "
+        if auction.active == False and request.user!= bid.winner:
+            message_final = "Auction closed"
+        if auction.active == False and request.user == bid.winner:
+            message_final = "Auction closed. You are the winner"
+        in_watchlist = False
+        if auction.id in list:
+            in_watchlist = True
         return render(request, "auctions/listing.html", {
             "listing": auction,
             "listedby": auction.user.username,
@@ -178,7 +200,9 @@ def listing(request, id):
             "bids_total": bids_total, 
             "amount": auction.price,
             "message": message_bid,
-            "bids_message": f"{bids_total} bid(s) so far. {current_bid_message} ",
+            "bids_message": message_final,
+            "active": auction.active,
+            "in_watchlist": in_watchlist
         })
     elif request.method == "POST":
         bids = Bid.objects.filter(auction=auction)
@@ -206,6 +230,7 @@ def listing(request, id):
                 "amount": float(request.POST["placebid"]),
                 "message": message_bid,
                 "bids_message": f"{bids_total} bid(s) so far. {current_bid_message}",
+                "active": auction.active
             })
         if amount is None:
             bid = Bid()
@@ -319,6 +344,13 @@ def close_auction(request,id):
     if request.method == "POST":
         if "active" in request.POST:
             article.active = False
-    article.save()
-    return HttpResponse("se inactivo la oferta")
-    # return HttpResponseRedirect(reverse("index"))
+            article.save()
+        bids = Bid.objects.filter(auction=article)
+        max = 0
+        winner = None
+        for bid in bids:
+            if bid.amount > max:
+                max = bid.amount
+                bid.winner = bid.user
+                bid.save()
+        return HttpResponseRedirect(reverse("index"))
