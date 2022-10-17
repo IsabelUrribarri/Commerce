@@ -1,11 +1,12 @@
 import re
+# from xml.etree.ElementTree import Comment
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.urls import reverse
 import json
-from .models import AuctionList, Category, User, Bid
+from .models import AuctionList, Category, User, Comment, Bid
 
 def index(request):
     user = request.user
@@ -169,6 +170,7 @@ def listing(request, id):
         bids = Bid.objects.filter(auction=auction)
         bids_total = len(bids)
         amount = None
+        bid = None
         max = 0
         for bid in bids:
             if bid.amount > max:
@@ -202,7 +204,8 @@ def listing(request, id):
             "message": message_bid,
             "bids_message": message_final,
             "active": auction.active,
-            "in_watchlist": in_watchlist
+            "in_watchlist": in_watchlist,
+            "comments": Comment.objects.filter(auction=auction)
         })
     elif request.method == "POST":
         bids = Bid.objects.filter(auction=auction)
@@ -230,7 +233,8 @@ def listing(request, id):
                 "amount": float(request.POST["placebid"]),
                 "message": message_bid,
                 "bids_message": f"{bids_total} bid(s) so far. {current_bid_message}",
-                "active": auction.active
+                "active": auction.active,
+                "comments": Comment.objects.filter(auction=auction),
             })
         if amount is None:
             bid = Bid()
@@ -270,6 +274,13 @@ def add_to_watchlist(request, id):
     user.save()
     return HttpResponseRedirect(reverse("listing", args=[id]))
 
+def add_comment(request, id):
+    comment = Comment()
+    comment.auction = AuctionList.objects.get(id=id)
+    comment.user = request.user
+    comment.comment = request.POST["comentario"]
+    comment.save()
+    return HttpResponseRedirect(reverse("listing", args=[id]))
 
 def watchlist(request):
     user = request.user
