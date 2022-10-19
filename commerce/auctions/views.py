@@ -163,9 +163,10 @@ def new_auction(request):
 
 def listing(request, id): 
     user = request.user
-    if user.watchlist == "":
-        user.watchlist = "[]"
-    user.save()
+    if user.is_authenticated:
+        if user.watchlist == "":
+            user.watchlist = "[]"
+            user.save()
     global message_bid 
     message_bid = None
     auction = AuctionList.objects.get(id=id)
@@ -178,8 +179,11 @@ def listing(request, id):
         withimg = False
     else:
         withimg = True
-    list = json.loads(user.watchlist)
-    contador = len(list)
+    list = []
+    contador = 0
+    if user.is_authenticated:
+        list = json.loads(user.watchlist)
+        contador = len(list)
     if request.method == "GET":
         bids = Bid.objects.filter(auction=auction)
         bids_total = len(bids)

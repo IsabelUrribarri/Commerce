@@ -23,17 +23,12 @@
                     <td width="70%">
                         <ul class="sinbullets">
                             <div class="dscstyle">
-                                {% if user.is_authenticated %}
+                               
                                     <li><a href="{% url 'listing' auction.id %}">{{auction.title}}</a></li>
                                     <li>{{ auction.price }}</li>
                                     <li>{{ auction.description }}</li><br>
                                     <li class="smallfont">Created {{ auction.date_creation }}</li>
-                                {% else %}
-                                    <li>{{auction.title}}</li>
-                                    <li>{{ auction.price }}</li>
-                                    <li>{{ auction.description }}</li><br>
-                                    <li class="smallfont">Created {{ auction.date_creation }}</li>
-                                {% endif %}
+
         
                             </div>
                         </ul>

@@ -20,14 +20,18 @@ Listing
 <h1>Listing: {{ listing.title }}</h1>
 <form action="{% url 'add_to_watchlist' listing.id %}" method="post">
     {% csrf_token %}
-    {% if active%}
-    <input type="submit" value="Watchlist" class="btn btn-success btn-sm">
-    {% else %}
-        {% if in_watchlist %} 
+    {% if user.is_authenticated %}
+      {% if active%}
         <input type="submit" value="Watchlist" class="btn btn-success btn-sm">
+      {% else %}
+        {% if in_watchlist %} 
+          <input type="submit" value="Watchlist" class="btn btn-success btn-sm">
         {% else %}
-        <input type="submit" disabled value="Watchlist" class="btn btn-success btn-sm">
+          <input type="submit" disabled value="Watchlist" class="btn btn-success btn-sm">
         {% endif %}
+      {% endif %}
+    {% else %}
+      <input type="submit" disabled value="Watchlist" class="btn btn-success btn-sm">
     {% endif %}
 </form>
 <div class="container">
@@ -79,7 +83,11 @@ Listing
         </div>
         {% if active %}
         <div class="form-group">
-            <input class="btn btn-primary" type="submit" value="Place Bid">
+            {% if user.is_authenticated %}
+                <input class="btn btn-primary" type="submit" value="Place Bid">
+            {% else %}
+                <input class="btn btn-primary" type="submit" value="Place Bid" disabled>
+            {% endif %}
         </div>
         {% else %}
         <div class="form-group">
@@ -90,8 +98,12 @@ Listing
     {% endif %}
     <p class="bigfont">Details</p>
     <ul>
+      {% if user.is_authenticated %}
         <li>Listed by: <a href="{% url 'user_listings' listing.id %}">{{ listedby }}</a></li>
-        <li>Category: {{ category }}</li>
+      {% else %}
+        <li>Listed by: <a href="{% url 'user_listings' listing.id %}" class="disabled" onclick="return false;">{{ listedby }}</a></li>
+      {% endif %}
+      <li>Category: {{ category }}</li>
     </ul>
 
     <!-- comentarios -->
@@ -103,7 +115,11 @@ Listing
                 <textarea class="form-control w-25" id="exampleFormControlTextarea1" rows="3" name="comentario"></textarea>
               </div>
         <!-- <div class="form-group"> -->
+          {% if user.is_authenticated %}
             <input class="btn btn-primary" type="submit" value="Add comment">
+            {% else %}
+            <input class="btn btn-primary" type="submit" value="Add comment" disabled>
+            {% endif %}
         </div>
     </form>
     <br>
