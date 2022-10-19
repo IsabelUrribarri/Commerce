@@ -7,8 +7,11 @@
 
 {% endblock %}
 {% block body %}
-{% if user.is_authenticated %}
+{% if titulo %}
+<h2>{{ titulo }}</h2>
+{% else %}
 <h2>Active Listings</h2>
+{% endif %}
 <ul class="sinbullets">
     {% for auction in auctions %}
 
@@ -20,10 +23,13 @@
                     <td width="70%">
                         <ul class="sinbullets">
                             <div class="dscstyle">
-                                <li><a href="{% url 'listing' auction.id %}">{{auction.title}}</a></li>
-                                <li>{{ auction.price }}</li>
-                                <li>{{ auction.description }}</li><br>
-                                <li class="smallfont">Created {{ auction.date_creation }}</li>
+                               
+                                    <li><a href="{% url 'listing' auction.id %}">{{auction.title}}</a></li>
+                                    <li>{{ auction.price }}</li>
+                                    <li>{{ auction.description }}</li><br>
+                                    <li class="smallfont">Created {{ auction.date_creation }}</li>
+
+        
                             </div>
                         </ul>
                     </td>
@@ -34,6 +40,4 @@
 
     {% endfor %}
 </ul>
-{% else %}
-{% endif %}
 {% endblock %}

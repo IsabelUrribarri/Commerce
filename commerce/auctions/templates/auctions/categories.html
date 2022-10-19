@@ -5,8 +5,17 @@
 {% block body %}
 
 {% if user.is_authenticated %}
-    <h2>None</h2>
-    <h2>otros</h2>
+
+<ul class="sinbullets">
+    {% for category in categories %}
+    <div class="dscstyle">
+        <li><a href="{% url 'category' category.id %}">{{category.name}}</a></li>
+        <li>{{ category.description }}</li><br>
+    </div>
+    {% endfor %}
+</ul>
+    
+
 {% endif %}
 
 {% endblock %}

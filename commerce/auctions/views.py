@@ -1,18 +1,24 @@
 import re
+# from xml.etree.ElementTree import Comment
 from django.contrib.auth import authenticate, login, logout
 from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import redirect, render
 from django.urls import reverse
 import json
-from .models import AuctionList, User
-
+from .models import AuctionList, Category, User, Comment, Bid
 
 def index(request):
     user = request.user
+    global contador
+    contador = 0
     if user.is_authenticated:
-        list = json.loads(user.watchlist)
-        contador = len(list) 
+        if user.watchlist == "":
+            list = []
+            contador = 0 
+        else:
+            list = json.loads(user.watchlist)
+            contador = len(list) 
         return render(request, "auctions/index.html", {
            "auctions": AuctionList.objects.filter(active=True),
            "contador": contador
@@ -20,6 +26,50 @@ def index(request):
     else:
         return render(request, "auctions/index.html", {
            "auctions": AuctionList.objects.filter(active=True),
+           "contador": 0
+        })
+
+def my_listings(request):
+    user = request.user
+    if user.is_authenticated:
+        list = json.loads(user.watchlist)
+        contador = len(list) 
+        return render(request, "auctions/index.html", {
+           "auctions": AuctionList.objects.filter(user=user),
+           "contador": contador,
+           "titulo": "My Listings"
+        })
+    else:
+        return render(request, "auctions/index.html", {
+           "auctions": AuctionList.objects.filter(active=True),
+           "contador": 0
+        })
+
+def user_listings(request, id):
+    listing = AuctionList.objects.get(id=id)
+    user = listing.user
+    list = json.loads(request.user.watchlist)
+    contador = len(list) 
+    return render(request, "auctions/index.html", {
+        "auctions": AuctionList.objects.filter(user=user),
+        "contador": contador,
+        "titulo": f"{user.username} Listings"
+    })
+
+
+def all_listings(request):
+    user = request.user
+    if user.is_authenticated:
+        list = json.loads(user.watchlist)
+        contador = len(list) 
+        return render(request, "auctions/index.html", {
+           "auctions": AuctionList.objects.all(),
+           "contador": contador,
+           "titulo": "All Listings"
+        })
+    else:
+        return render(request, "auctions/index.html", {
+           "auctions": AuctionList.objects.all(),
            "contador": 0
         })
 
@@ -69,6 +119,9 @@ def register(request):
             return render(request, "auctions/register.html", {
                 "message": "Username already taken."
             })
+        if user.watchlist == "":
+            user.watchlist = "[]"
+        user.save()
         login(request, user)
         return HttpResponseRedirect(reverse("index"))
     else:
@@ -82,6 +135,8 @@ def new_auction(request):
         starting_bid = request.POST["starting_bid"]
         url_image = request.POST["image"]
         auction = AuctionList()
+        category_id = request.POST["categories"]
+        auction.category = Category.objects.get(id=category_id) 
         auction.active = True
         auction.title = title
         auction.description = description
@@ -94,35 +149,156 @@ def new_auction(request):
         return HttpResponseRedirect(reverse("index"))
 
     else:
-        return render(request, "auctions/new_auction.html")
+        user = request.user
+        if user.watchlist == "":
+            list = []
+            contador = 0 
+        else:
+            list = json.loads(user.watchlist)
+            contador = len(list) 
+        return render(request, "auctions/new_auction.html", {
+            "contador": contador,
+            "categories":Category.objects.all()
+        })
 
-
-def listing(request, id):
+def listing(request, id): 
     user = request.user
-    list = json.loads(user.watchlist)
-    contador = len(list)
-    listing = AuctionList.objects.get(id=id)
-    if len(listing.url_image) == 0:
+    if user.is_authenticated:
+        if user.watchlist == "":
+            user.watchlist = "[]"
+            user.save()
+    global message_bid 
+    message_bid = None
+    auction = AuctionList.objects.get(id=id)
+    category = auction.category
+    if category is None:
+        category = "No category Listed"
+    else:
+        category = auction.category.name
+    if len(auction.url_image) == 0:
         withimg = False
     else:
         withimg = True
-    return render(request, "auctions/listing.html", {
-        "listing": listing,
-        "listedby": listing.user.username,
-        "withimg": withimg,
-        "contador": contador,
+    list = []
+    contador = 0
+    if user.is_authenticated:
+        list = json.loads(user.watchlist)
+        contador = len(list)
+    if request.method == "GET":
+        bids = Bid.objects.filter(auction=auction)
+        bids_total = len(bids)
+        amount = None
+        bid = None
+        max = 0
+        for bid in bids:
+            if bid.amount > max:
+                max = bid.amount
+            if bid.user == user:
+                amount = bid.amount
+        if request.user == auction.user:
+            current_bid_message = f"The highest bidder belongs to {auction.user.username} "
+        else:
+            if max == amount:
+                current_bid_message = "Your bid is the current bid."
+            else:
+                current_bid_message = "Your bid is not the current bid."
 
-    })
+        message_final = f"{bids_total} bid(s) so far. {current_bid_message} "
+        if auction.active == False and bid is not None and request.user!= bid.winner:
+            message_final = "Auction closed"
+        if auction.active == False and bid is not None and request.user == bid.winner:
+            message_final = "Auction closed. You are the winner"
+        in_watchlist = False
+        if auction.id in list:
+            in_watchlist = True
+        return render(request, "auctions/listing.html", {
+            "listing": auction,
+            "listedby": auction.user.username,
+            "withimg": withimg,
+            "contador": contador,
+            "category": category,
+            "bids_total": bids_total, 
+            "amount": auction.price,
+            "message": message_bid,
+            "bids_message": message_final,
+            "active": auction.active,
+            "in_watchlist": in_watchlist,
+            "comments": Comment.objects.filter(auction=auction)
+        })
+    elif request.method == "POST":
+        bids = Bid.objects.filter(auction=auction)
+        bids_total = len(bids)
+        amount = None
+        max = 0
+        for bid in bids:
+            if bid.amount > max:
+                max = bid.amount
+            if bid.user == user:
+                amount = bid.amount
+        if max == amount:
+            current_bid_message = "Your bid is the current bid."
+        else: 
+            current_bid_message = "Your bid is not the current bid."
+        if float(request.POST["placebid"]) <= auction.price: 
+            message_bid = "Bid must be bigger than actual bid"
+            return render(request, "auctions/listing.html", {
+                "listing": auction,
+                "listedby": auction.user.username,
+                "withimg": withimg,
+                "contador": contador,
+                "category": category,
+                "bids_total": bids_total, 
+                "amount": float(request.POST["placebid"]),
+                "message": message_bid,
+                "bids_message": f"{bids_total} bid(s) so far. {current_bid_message}",
+                "active": auction.active,
+                "comments": Comment.objects.filter(auction=auction),
+            })
+        if amount is None:
+            bid = Bid()
+        else:
+            bids = Bid.objects.filter(auction=auction, user=user)
+            bid = bids[0] 
+        auction.price = float(request.POST["placebid"])
+        auction.save()
+        bid.amount = float(request.POST["placebid"])
+        bid.user = user
+        bid.auction = auction
+        bid.save()
 
+        current_bid_message = "Your bid is the current bid."
+        return render(request, "auctions/listing.html", {
+            "listing": auction,
+            "listedby": auction.user.username,
+            "withimg": withimg,
+            "contador": contador,
+            "category": category,
+            "bids_total": len(Bid.objects.filter(auction=auction)), 
+            "amount": auction.price,
+            "message": message_bid,
+            "bids_message": f"{len(Bid.objects.filter(auction=auction))} bid(s) so far. {current_bid_message}",
+        })
 
 def add_to_watchlist(request, id):
     user = request.user
     list = json.loads(user.watchlist)
-    list.append(id)
+    if id in list :
+        list.remove(id)
+    else:
+        list.append(id)
+
+
     user.watchlist = json.dumps(list)
     user.save()
     return HttpResponseRedirect(reverse("listing", args=[id]))
 
+def add_comment(request, id):
+    comment = Comment()
+    comment.auction = AuctionList.objects.get(id=id)
+    comment.user = request.user
+    comment.comment = request.POST["comentario"]
+    comment.save()
+    return HttpResponseRedirect(reverse("listing", args=[id]))
 
 def watchlist(request):
     user = request.user
@@ -133,13 +309,78 @@ def watchlist(request):
     contador = len(watchlist)
     return render(request, "auctions/index.html", {
         "auctions": watchlist,
-        "contador": contador
+        "contador": contador,
+        "titulo":  "Watchlist"
     })
 
 def categories(request):
     user = request.user
-    ids = json.loads(user.watchlist)
-    contador = len(ids)
+    list = json.loads(user.watchlist)
+    contador = len(list)
+    categories = Category.objects.all()
     return render(request, "auctions/categories.html", {
-        "contador": contador
+        "categories": categories,
+        "contador" : contador,
     })
+
+def category(request, id):
+    user = request.user
+    auctions = AuctionList.objects.filter(category=id)
+    list = json.loads(user.watchlist)
+    contador = len(list)
+
+    return render(request, "auctions/index.html", {
+        "auctions": auctions,
+        "contador": contador,
+    })
+
+def edit_auction(request,id):
+    user = request.user
+    article = AuctionList.objects.get(id=id)
+    category = article.category
+    if category is None:
+        category = "No category Listed"
+    else:
+        category = article.category.name
+    
+    if request.method == "POST":
+        article.title = request.POST["title"]
+        category_id = request.POST["categories"]
+        article.category = Category.objects.get(id=category_id) 
+        if "active" in request.POST:
+            article.active = True
+        else:
+            article.active = False
+        article.description = request.POST["description"]
+        article.price = request.POST["starting_bid"]
+        article.url_image = request.POST["image"]
+        userid = request.POST["userid"]
+        user_object = User.objects.get(id=userid)
+        article.user = user_object
+        article.save()
+        return HttpResponseRedirect(reverse("index"))
+
+    else:
+        list = json.loads(user.watchlist)
+        contador = len(list)
+        return render(request, "auctions/edit_auction.html", {
+            "contador": contador,
+            "listing": article,
+            "categories": Category.objects.all(),
+        })
+
+def close_auction(request,id):
+    article = AuctionList.objects.get(id=id)
+    if request.method == "POST":
+        if "active" in request.POST:
+            article.active = False
+            article.save()
+        bids = Bid.objects.filter(auction=article)
+        max = 0
+        winner = None
+        for bid in bids:
+            if bid.amount > max:
+                max = bid.amount
+                bid.winner = bid.user
+                bid.save()
+        return HttpResponseRedirect(reverse("index"))
