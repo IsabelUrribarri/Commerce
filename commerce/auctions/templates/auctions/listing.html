@@ -90,7 +90,7 @@ Listing
     {% endif %}
     <p class="bigfont">Details</p>
     <ul>
-        <li>Listed by: {{ listedby }}</li>
+        <li>Listed by: <a href="{% url 'user_listings' listing.id %}">{{ listedby }}</a></li>
         <li>Category: {{ category }}</li>
     </ul>
 

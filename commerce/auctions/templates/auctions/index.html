@@ -7,8 +7,11 @@
 
 {% endblock %}
 {% block body %}
-
+{% if titulo %}
+<h2>{{ titulo }}</h2>
+{% else %}
 <h2>Active Listings</h2>
+{% endif %}
 <ul class="sinbullets">
     {% for auction in auctions %}
 

@@ -36,13 +36,26 @@ def my_listings(request):
         contador = len(list) 
         return render(request, "auctions/index.html", {
            "auctions": AuctionList.objects.filter(user=user),
-           "contador": contador
+           "contador": contador,
+           "titulo": "My Listings"
         })
     else:
         return render(request, "auctions/index.html", {
            "auctions": AuctionList.objects.filter(active=True),
            "contador": 0
         })
+
+def user_listings(request, id):
+    listing = AuctionList.objects.get(id=id)
+    user = listing.user
+    list = json.loads(request.user.watchlist)
+    contador = len(list) 
+    return render(request, "auctions/index.html", {
+        "auctions": AuctionList.objects.filter(user=user),
+        "contador": contador,
+        "titulo": f"{user.username} Listings"
+    })
+
 
 def all_listings(request):
     user = request.user
@@ -51,7 +64,8 @@ def all_listings(request):
         contador = len(list) 
         return render(request, "auctions/index.html", {
            "auctions": AuctionList.objects.all(),
-           "contador": contador
+           "contador": contador,
+           "titulo": "All Listings"
         })
     else:
         return render(request, "auctions/index.html", {
@@ -186,9 +200,9 @@ def listing(request, id):
                 current_bid_message = "Your bid is not the current bid."
 
         message_final = f"{bids_total} bid(s) so far. {current_bid_message} "
-        if auction.active == False and request.user!= bid.winner:
+        if auction.active == False and bid is not None and request.user!= bid.winner:
             message_final = "Auction closed"
-        if auction.active == False and request.user == bid.winner:
+        if auction.active == False and bid is not None and request.user == bid.winner:
             message_final = "Auction closed. You are the winner"
         in_watchlist = False
         if auction.id in list:
@@ -291,7 +305,8 @@ def watchlist(request):
     contador = len(watchlist)
     return render(request, "auctions/index.html", {
         "auctions": watchlist,
-        "contador": contador
+        "contador": contador,
+        "titulo":  "Watchlist"
     })
 
 def categories(request):
