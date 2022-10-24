@@ -56,6 +56,21 @@
         document.querySelector('#compose-recipients').value = '';
         document.querySelector('#compose-subject').value = '';
         document.querySelector('#compose-body').value = '';
+        console.log("le diste click al boton enviar")
+        fetch('/emails', {
+        method: 'POST',
+        body: JSON.stringify({
+            recipients: 'baz@example.com',
+            subject: 'Meeting time',
+            body: 'How about we meet tomorrow at 3pm?'
+        })
+        })
+        .then(response => response.json())
+        .then(result => {
+            // Print result
+            console.log(result);
+        });
+
         }
 
         function load_mailbox(mailbox) 
@@ -68,21 +83,17 @@
             // Show the mailbox name
             document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
             
-            if (mailbox == "sent"){
-                fetch('/emails', {
-                    method: 'POST',
-                    body: JSON.stringify({
-                        recipients: 'urribarriisabel@gmail.com',
-                        subject: 'Meeting time',
-                        body: 'How about we meet tomorrow at 3pm?'
-                    })
-                })
+            if (mailbox == "inbox"){
+                fetch('/emails/inbox')
                 .then(response => response.json())
-                .then(result => {
-                    // Print result
-                    console.log(result);
+                .then(emails => {
+                console.log(emails);
                 });
-            }    
+                
+                var parrafo = document.createElement("p");
+                parrafo.innerHTML = "lista de correos"
+                document.querySelector("#emails-view").appendChild(parrafo)
+            } 
 
         }
 </script>
