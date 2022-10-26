@@ -18,7 +18,6 @@ class Email(models.Model):
 
     def serialize(self):
         return {
-            "user": self.user,
             "id": self.id,
             "sender": self.sender.email,
             "recipients": [user.email for user in self.recipients.all()],
