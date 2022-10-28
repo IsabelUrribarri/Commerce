@@ -42,9 +42,9 @@
         document.querySelector('#sent').addEventListener('click', () => load_mailbox('sent'));
         document.querySelector('#archived').addEventListener('click', () => load_mailbox('archive'));
         document.querySelector('#compose').addEventListener('click', compose_email);
-        
+
         // Send the email
-        
+
         document.querySelector('#send-email').addEventListener('click', send_email);
 
         // By default, load the inbox
@@ -61,7 +61,7 @@
         document.querySelector('#compose-recipients').value = '';
         document.querySelector('#compose-subject').value = '';
         document.querySelector('#compose-body').value = '';
-        
+
 
     }
 
@@ -70,7 +70,7 @@
             method: 'POST',
             body: JSON.stringify({
                 recipients: document.querySelector('#compose-recipients').value,
-                subject:  document.querySelector('#compose-subject').value,
+                subject: document.querySelector('#compose-subject').value,
                 body: document.querySelector('#compose-body').value
             })
         })
@@ -88,7 +88,66 @@
         document.querySelector('#compose-view').style.display = 'none';
 
         // Show the mailbox name
-        document.querySelector('#emails-view').innerHTML = `<h3>cambios ${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
+        document.querySelector('#emails-view').innerHTML = `<h3>${mailbox.charAt(0).toUpperCase() + mailbox.slice(1)}</h3>`;
+        let list = document.createElement("ul")
+        document.querySelector("#emails-view").appendChild(list)
+        if (mailbox == "inbox") {
+            fetch('/emails/inbox')
+                .then(response => response.json())
+                .then(emails => {
+                    // Print emails
+                    console.log(emails);
+
+                    // ... do something else with emails ...
+                    for (let i = 0; i < emails.length; i++) {
+                        // console.log(emails[i].sender,emails[i].subject);
+                        let myli = document.createElement("li");
+                        myli.setAttribute("class", "d-flex justify-content-between border border-dark p-1")
+                        sender = document.createElement("span")
+                        sender.innerHTML = emails[i].sender
+                        subject = document.createElement("span")
+                        subject.innerHTML = emails[i].subject
+                        timestamp = document.createElement("span")
+                        timestamp.innerHTML = emails[i].timestamp
+                        myli.appendChild(sender)
+                        myli.appendChild(subject)
+                        myli.appendChild(timestamp)
+                        list.appendChild(myli)
+                        
+                    }
+
+                });
+        }
+    
+        if (mailbox == "sent") {
+            fetch('/emails/sent')
+                .then(response => response.json())
+                .then(emails => {
+                    // Print emails
+                    console.log(emails);
+
+                    // ... do something else with emails ...
+                    for (let i = 0; i < emails.length; i++) {
+                        let two_recipients = emails[i].recipients[0] + ", " + emails[i].recipients[1]
+                        console.log(two_recipients)
+                        let myli = document.createElement("li");
+                        myli.setAttribute("class", "d-flex justify-content-between border border-dark p-1")
+                        recipients = document.createElement("span")
+                        recipients.innerHTML = emails[i].sender
+                        subject = document.createElement("span")
+                        subject.innerHTML = emails[i].subject
+                        timestamp = document.createElement("span")
+                        timestamp.innerHTML = emails[i].timestamp
+                        myli.appendChild(sender)
+                        myli.appendChild(subject)
+                        myli.appendChild(timestamp)
+                        list.appendChild(myli)
+                        
+                    }
+
+                });
+        }
+    
     }
 </script>
 {% endblock %}
