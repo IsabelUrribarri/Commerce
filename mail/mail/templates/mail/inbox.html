@@ -127,18 +127,31 @@
                     console.log(emails);
 
                     // ... do something else with emails ...
+                    const largo_destinatarios = 25
                     for (let i = 0; i < emails.length; i++) {
-                        let two_recipients = emails[i].recipients[0] + ", " + emails[i].recipients[1]
-                        console.log(two_recipients)
+                        let two_recipients = emails[i].recipients[0]
+                        
+                        if (emails[i].recipients.length > 1){
+                            
+                            two_recipients = emails[i].recipients[0] + ", " + emails[i].recipients[1]
+                        }
+                        let para = two_recipients.substring(0, largo_destinatarios)
+                        if (two_recipients.length > largo_destinatarios-1) {
+                            para = two_recipients.substring(0, largo_destinatarios) + "...";
+                        }
+                        console.log(para)
+                        
                         let myli = document.createElement("li");
                         myli.setAttribute("class", "d-flex justify-content-between border border-dark p-1")
                         recipients = document.createElement("span")
-                        recipients.innerHTML = emails[i].sender
+                        recipients.setAttribute("class", "para")
+                        recipients.innerHTML = para.padEnd(largo_destinatarios, ' ')
+                        console.log(para)
                         subject = document.createElement("span")
                         subject.innerHTML = emails[i].subject
                         timestamp = document.createElement("span")
                         timestamp.innerHTML = emails[i].timestamp
-                        myli.appendChild(sender)
+                        myli.appendChild(recipients)
                         myli.appendChild(subject)
                         myli.appendChild(timestamp)
                         list.appendChild(myli)

@@ -7,3 +7,8 @@ ul {
     margin: 0;
     padding: 0;
   }
+
+.para {
+    min-width: 50px;
+    max-width: 51px
+  }
