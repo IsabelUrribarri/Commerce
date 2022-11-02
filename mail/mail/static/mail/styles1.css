@@ -9,6 +9,6 @@ ul {
   }
 
 .para {
-    min-width: 50px;
-    max-width: 51px
+    width: 60px;
+    background-color: red;
   }
