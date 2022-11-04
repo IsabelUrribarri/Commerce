@@ -20,6 +20,7 @@
   <p id="subject"></p>
   <p id="timestamp"></p>
   <button class="btn btn-sm btn-outline-primary" id="reply">Reply</button>
+  <button class="btn btn-sm btn-outline-primary" id="archive-button">Archive</button>
   <hr>
   <p id="email-body"></p>
 </div>
@@ -68,6 +69,7 @@
     // Show compose view and hide other views
     document.querySelector('#emails-view').style.display = 'none';
     document.querySelector('#compose-view').style.display = 'block';
+    email_view.style.display = 'none';
 
     // Clear out composition fields
     document.querySelector('#compose-recipients').value = '';
@@ -76,11 +78,72 @@
 
 
   }
+  function archivar_email(id) {
+    fetch(`/emails/${id}`)
+      .then(response => response.json())
+      .then(email => {
 
-  function leer_email(id) {
+        let sender = email.sender
+        let subject = email.subject
+        let timestamp = email.timestamp
+      });
+
+    fetch(`/emails/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        sender: sender,
+        subject: subject,
+        timestamp: timestamp,
+        archived: true
+      })
+    })
+    load_mailbox('inbox');
+  }
+  function unarchive_email(id) {
+    fetch(`/emails/${id}`)
+      .then(response => response.json())
+      .then(email => {
+
+        let sender = email.sender
+        let subject = email.subject
+        let timestamp = email.timestamp
+      });
+
+    fetch(`/emails/${id}`, {
+      method: 'PUT',
+      body: JSON.stringify({
+        sender: sender,
+        subject: subject,
+        timestamp: timestamp,
+        archived: false
+      })
+    })
+    load_mailbox('inbox');
+  }
+
+  function reply_email(id) {
+    alert('reply email')
+    compose_email()
+  }
+
+  function leer_email(id, mailbox) {
     document.querySelector('#emails-view').style.display = 'none';
     document.querySelector('#compose-view').style.display = 'none';
     email_view.style.display = 'block'
+
+    boton_reply = document.querySelector('#reply')
+    boton_reply.addEventListener('click', () => reply_email(id));
+
+    if (mailbox == 'inbox') {
+      boton_archivar = document.querySelector('#archive-button')
+      boton_archivar.addEventListener('click', () => archivar_email(id));
+      boton_archivar.innerHTML = 'Archive'
+    }
+    else if (mailbox == 'archive') {
+      boton_archivar = document.querySelector('#archive-button')
+      boton_archivar.innerHTML = 'Unarchive'
+      boton_archivar.addEventListener('click', () => unarchive_email(id));
+    }
 
     fetch(`/emails/${id}`)
       .then(response => response.json())
@@ -151,7 +214,8 @@
             if (emails[i].read == true) {
               myli.classList.add("leido");
             }
-            myli.addEventListener('click', () => leer_email(emails[i].id));
+            myli.addEventListener('click', () => leer_email(emails[i].id, 'inbox'));
+
             sender = document.createElement("span")
             sender.innerHTML = emails[i].sender
             subject = document.createElement("span")
@@ -201,6 +265,38 @@
             timestamp = document.createElement("span")
             timestamp.innerHTML = emails[i].timestamp
             myli.appendChild(recipients)
+            myli.appendChild(subject)
+            myli.appendChild(timestamp)
+            list.appendChild(myli)
+
+          }
+
+        });
+    }
+
+    if (mailbox == "archive") {
+      fetch('/emails/archive')
+        .then(response => response.json())
+        .then(emails => {
+          // Print emails
+          console.log(emails);
+
+          // ... do something else with emails ...
+          for (let i = 0; i < emails.length; i++) {
+            // console.log(emails[i].sender,emails[i].subject);
+            let myli = document.createElement("li");
+            myli.setAttribute("class", "d-flex justify-content-between border border-dark p-1")
+            if (emails[i].read == true) {
+              myli.classList.add("leido");
+            }
+            myli.addEventListener('click', () => leer_email(emails[i].id, 'archive'));
+            sender = document.createElement("span")
+            sender.innerHTML = emails[i].sender
+            subject = document.createElement("span")
+            subject.innerHTML = emails[i].subject
+            timestamp = document.createElement("span")
+            timestamp.innerHTML = emails[i].timestamp
+            myli.appendChild(sender)
             myli.appendChild(subject)
             myli.appendChild(timestamp)
             list.appendChild(myli)
