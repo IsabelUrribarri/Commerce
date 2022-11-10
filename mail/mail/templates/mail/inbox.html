@@ -52,7 +52,7 @@
     document.querySelector('#inbox').addEventListener('click', () => load_mailbox('inbox'));
     document.querySelector('#sent').addEventListener('click', () => load_mailbox('sent'));
     document.querySelector('#archived').addEventListener('click', () => load_mailbox('archive'));
-    document.querySelector('#compose').addEventListener('click', compose_email);
+    document.querySelector('#compose').addEventListener('click', () => compose_email(''));
     email_view = document.querySelector('#email-view')
     // Send the email
 
@@ -64,18 +64,26 @@
   });
 
 
-  function compose_email() {
+  function compose_email(replay_to) {
+
 
     // Show compose view and hide other views
     document.querySelector('#emails-view').style.display = 'none';
     document.querySelector('#compose-view').style.display = 'block';
     email_view.style.display = 'none';
 
+    if (replay_to === '') {
     // Clear out composition fields
     document.querySelector('#compose-recipients').value = '';
     document.querySelector('#compose-subject').value = '';
-    document.querySelector('#compose-body').value = '';
 
+    }
+
+    else {
+    // Fill some known information
+    document.querySelector('#compose-recipients').value = 'El que te envio el correo';
+    document.querySelector('#compose-subject').value = `Re: el mismo que el correo original ${replay_to}`;
+    }
 
   }
   function archivar_email(id) {
@@ -122,8 +130,9 @@
   }
 
   function reply_email(id) {
-    alert('reply email')
-    compose_email()
+    // alert('reply email')
+    
+    compose_email(`${id}`)
   }
 
   function leer_email(id, mailbox) {
