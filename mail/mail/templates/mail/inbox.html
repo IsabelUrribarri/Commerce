@@ -46,8 +46,11 @@
 {% block script %}
 <!-- <script src="{% static 'mail/inbox.js' %}"></script> -->
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
+  // Objeto global para guardar un email
+  let email_fetch = {sender: '', subject: '', body: '', date: ''};
 
+  document.addEventListener('DOMContentLoaded', function () {
+    
     // Use buttons to toggle between views
     document.querySelector('#inbox').addEventListener('click', () => load_mailbox('inbox'));
     document.querySelector('#sent').addEventListener('click', () => load_mailbox('sent'));
@@ -81,8 +84,15 @@
 
     else {
     // Fill some known information
-    document.querySelector('#compose-recipients').value = 'El que te envio el correo';
-    document.querySelector('#compose-subject').value = `Re: el mismo que el correo original ${replay_to}`;
+    document.querySelector('#compose-body').value = `On ${email_fetch.date} ${email_fetch.sender} wrote:\n\n` + `${email_fetch.body}`
+    console.log("string text line 1\n" + "string text line 2");
+    document.querySelector('#compose-recipients').value = email_fetch.sender;
+    let prefijo = email_fetch.subject.substring(0, 3)
+    if (prefijo === 'Re:')
+      document.querySelector('#compose-subject').value = email_fetch.subject;
+    else 
+      document.querySelector('#compose-subject').value = `Re: ${email_fetch.subject}`;
+    console.log(email_fetch.date)
     }
 
   }
@@ -136,6 +146,7 @@
   }
 
   function leer_email(id, mailbox) {
+    console.log(email_fetch);
     document.querySelector('#emails-view').style.display = 'none';
     document.querySelector('#compose-view').style.display = 'none';
     email_view.style.display = 'block'
@@ -159,7 +170,10 @@
       .then(email => {
         // Print email
         console.log(email);
-
+        email_fetch.sender = email.sender
+        email_fetch.body = email.body
+        email_fetch.date = email.timestamp
+        email_fetch.subject = email.subject
         document.querySelector('#from').innerHTML = `<strong> From: </strong> ${email.sender}`
         document.querySelector('#to').innerHTML = `<strong> To: </strong> ${email.recipients}`
         document.querySelector('#subject').innerHTML = `<strong> Subject: </strong> ${email.subject}`
